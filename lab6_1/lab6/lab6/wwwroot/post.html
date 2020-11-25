@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список должностей</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <h2>Список должностей</h2>
+    <form name="postForm">
+        <input type="hidden" name="postId" value="0" />
+        <div class="form-group col-md-5">
+            <label for="nameOfPost">Наименование должности:</label>
+            <input class="form-control" name="nameOfPost" />
+        </div>
+        <div class="panel-body">
+            <button type="submit" id="submit" class="btn btn-primary">Сохранить</button>
+            <a id="reset"></a>
+        </div>
+    </form>
+    <table class="table table-condensed table-striped  col-md-6">
+        <thead><tr><th>Id</th><th>Наименование должности</th><th></th></tr></thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+        async function GetPosts() {
+            const response = await fetch("/api/posts", {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                const posts = await response.json();
+                let rows = document.querySelector("tbody");
+                posts.forEach(post => {
+                    rows.append(row(post));
+                });
+            }
+        }
+        async function GetPost(id) {
+            const response = await fetch("/api/posts/" + id, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                const post = await response.json();
+                const form = document.forms["postForm"];
+                form.elements["postId"].value = post.postId;
+                form.elements["nameOfPost"].value = post.nameOfPost;
+            }
+        }
+        async function CreatePost(postName) {
+
+            const response = await fetch("api/posts", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nameOfPost: postName
+                })
+            });
+            if (response.ok === true) {
+                const post = await response.json();
+                reset();
+                document.querySelector("tbody").append(row(post));
+            }
+        }
+        async function EditPost(postId, postName) {
+            const response = await fetch("api/posts", {
+                method: "PUT",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    postId: parseInt(postId, 10),
+                    nameOfPost: postName
+                })
+            });
+            if (response.ok === true) {
+                const post = await response.json();
+                reset();
+                document.querySelector("tr[data-rowid='" + post.postId + "']").replaceWith(row(post));
+            }
+        }
+        async function DeletePost(id) {
+            const response = await fetch("/api/posts/" + id, {
+                method: "DELETE",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                const post = await response.json();
+                document.querySelector("tr[data-rowid='" + post.postId + "']").remove();
+            }
+        }
+
+        function reset() {
+            const form = document.forms["postForm"];
+            form.reset();
+            form.elements["postId"].value = 0;
+        }
+        function row(post) {
+
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-rowid", post.postId);
+
+            const idTd = document.createElement("td");
+            idTd.append(post.postId);
+            tr.append(idTd);
+
+            const nameTd = document.createElement("td");
+            nameTd.append(post.nameOfPost);
+            tr.append(nameTd);
+
+            const linksTd = document.createElement("td");
+
+            const editLink = document.createElement("a");
+            editLink.setAttribute("data-id", post.postId);
+            editLink.setAttribute("style", "cursor:pointer;padding:15px;");
+            editLink.append("Изменить");
+            editLink.addEventListener("click", e => {
+
+                e.preventDefault();
+                GetPost(post.postId);
+            });
+            linksTd.append(editLink);
+
+            const removeLink = document.createElement("a");
+            removeLink.setAttribute("data-id", post.postId);
+            removeLink.setAttribute("style", "cursor:pointer;padding:15px;");
+            removeLink.append("Удалить");
+            removeLink.addEventListener("click", e => {
+
+                e.preventDefault();
+                DeletePost(post.postId);
+            });
+
+            linksTd.append(removeLink);
+            tr.appendChild(linksTd);
+
+            return tr;
+        }
+        document.getElementById("reset").click(function (e) {
+
+            e.preventDefault();
+            reset();
+        })
+
+        document.forms["postForm"].addEventListener("submit", e => {
+            e.preventDefault();
+            const form = document.forms["postForm"];
+            const id = form.elements["postId"].value;
+            const name = form.elements["nameOfPost"].value;
+            if (id == 0)
+                CreatePost(name);
+            else
+                EditPost(id, name);
+        });
+
+        GetPosts();
+
+    </script>
+</body>
+</html>

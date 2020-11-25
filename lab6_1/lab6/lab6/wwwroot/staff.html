@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список сотрудников</title>
+    <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="lib/jquery/dist/jquery.js"></script>
+    <link href="lib/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="lib/jquery-ui/jquery-ui.js"></script>
+    <script src="lib/jquery-ui/ui/i18n/datepicker-ru.js"></script>
+</head>
+<body>
+    <h2>Список сотрудников</h2>
+    <form name="staffForm">
+        <input type="hidden" name="staffId" value="0" />
+        <div class="form-group col-md-5">
+            <label for="fio">ФИО :</label>
+            <input class="form-control" name="fio" />
+        </div>
+        <div class="form-group col-md-5">
+            <label for="age">Возраст :</label>
+            <input class="form-control" name="age" />
+        </div>
+        <div class="form-group col-md-5">
+            <label for="workExp">Стаж работы :</label>
+            <input class="form-control" name="workExp" />
+        </div>
+        <div class="form-group col-md-5">
+            <label for="nameOfPost">Название должности:</label>
+            <select id="postId" name="postId"></select>
+        </div>
+        <div class="form-group col-md-5">
+            <label for="trainId">Код поезда:</label>
+            <input class="form-control" name="trainId" />
+        </div>
+        <div class="panel-body">
+            <button type="submit" id="submit" class="btn btn-primary">Сохранить</button>
+            <a id="reset" class="btn btn-primary">Сброс</a>
+        </div>
+    </form>
+    <table class="table table-condensed table-striped  col-md-6">
+        <thead><tr><th>Id</th><th>ФИО</th><th>Возраст</th><th>Стаж работы</th><th>Название должности</th><th>Код поезда</th><th></th></tr></thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+        async function GetStaffs() {
+            const response = await fetch("/api/staffs", {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                const staffs = await response.json();
+                let rows = document.querySelector("tbody");
+                staffs.forEach(staff => {
+                    rows.append(row(staff));
+                });
+            }
+        }
+        async function GetStaff(id) {
+            $.ajax({
+                url: '/api/staffs/' + id,
+                type: 'GET',
+                contentType: "application/json",
+                success: function (staff) {
+                    var form = document.forms["staffForm"];
+                    form.elements["staffId"].value = staff.staffId;
+                    form.elements["fio"].value = staff.fio;
+                    form.elements["age"].value = staff.age;
+                    form.elements["workExp"].value = staff.workExp;
+                    form.elements["postId"].selectedIndex = staff.postId;
+                    form.elements["trainId"].value = staff.trainId;
+                }
+            });
+        }
+        async function CreateStaff(fio, age, workExp, postId, trainId) {
+
+            $.ajax({
+                url: "api/staffs/",
+                contentType: "application/json",
+                method: "POST",
+                data: JSON.stringify({
+                    fio: fio,
+                    age: parseInt(age, 10),
+                    workExp: parseInt(workExp, 10),
+                    postId: parseInt(postId, 10),
+                    trainId: parseInt(trainId, 10)
+                }),
+                success: function (staff) {
+                    reset();
+                    var form = document.forms["staffForm"];
+                    staff.nameOfPost = form.elements["postId"].options[postId].text;
+                    document.querySelector("tbody").append(row(staff));
+                }
+            })
+        }
+        async function EditStaff(staffId, fio, age, workExp, postId, trainId) {
+            const response = await fetch("api/staffs/", {
+                method: "PUT",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    staffId: parseInt(staffId, 10),
+                    fio: fio,
+                    age: parseInt(age, 10),
+                    workExp: parseInt(workExp, 10),
+                    postId: parseInt(postId, 10),
+                    trainId: parseInt(trainId, 10)
+                })
+            });
+            if (response.ok === true) {
+                const staff = await response.json();
+                reset();
+                var form = document.forms["staffForm"];
+                staff.nameOfPost = form.elements["postId"].options[postId].text;
+                document.querySelector("tr[data-rowid='" + staff.staffId + "']").replaceWith(row(staff));
+            }
+        }
+        async function DeleteStaff(id) {
+            const response = await fetch("/api/staffs/" + id, {
+                method: "DELETE",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                const staff = await response.json();
+                document.querySelector("tr[data-rowid='" + staff.staffId + "']").remove();
+            }
+        }
+
+        function GetPosts() {
+            var listItems = "";
+            $.ajax({
+                url: '/api/staffs/posts',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (posts) {
+                    listItems = listItems + "<option value=0 selected>(выбор)</option>";
+                    $.each(posts, function (index, post) {
+                        listItems = listItems + "<option value='" + post.postId +"'>" + post.nameOfPost + "</option>";
+                    });
+                    $("#postId").html(listItems);
+                }
+            });
+        }
+
+        function reset() {
+            const form = document.forms["staffForm"];
+            form.reset();
+            form.elements["staffId"].value = 0;
+        }
+        function row(staff) {
+
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-rowid", staff.staffId);
+
+            const idTd = document.createElement("td");
+            idTd.append(staff.staffId);
+            tr.append(idTd);
+
+            const fioTd = document.createElement("td");
+            fioTd.append(staff.fio);
+            tr.append(fioTd);
+
+            const ageTd = document.createElement("td");
+            ageTd.append(staff.age);
+            tr.append(ageTd);
+
+            const workExpTd = document.createElement("td");
+            workExpTd.append(staff.workExp);
+            tr.append(workExpTd);
+
+            const postTd = document.createElement("td");
+            postTd.append(staff.nameOfPost);
+            tr.append(postTd);
+
+            const trainTd = document.createElement("td");
+            trainTd.append(staff.trainId);
+            tr.append(trainTd);
+
+            const linksTd = document.createElement("td");
+
+            const editLink = document.createElement("a");
+            editLink.setAttribute("data-id", staff.staffId);
+            editLink.setAttribute("style", "cursor:pointer;padding:15px;");
+            editLink.append("Изменить");
+            editLink.addEventListener("click", e => {
+
+                e.preventDefault();
+                GetStaff(staff.staffId);
+            });
+            linksTd.append(editLink);
+
+            const removeLink = document.createElement("a");
+            removeLink.setAttribute("data-id", staff.staffId);
+            removeLink.setAttribute("style", "cursor:pointer;padding:15px;");
+            removeLink.append("Удалить");
+            removeLink.addEventListener("click", e => {
+
+                e.preventDefault();
+                DeleteStaff(staff.staffId);
+            });
+
+            linksTd.append(removeLink);
+            tr.appendChild(linksTd);
+
+            return tr;
+        }
+
+        $("#reset").click(function (e) {
+            e.preventDefault();
+            reset();
+        })
+
+        document.forms["staffForm"].addEventListener("submit", e => {
+            e.preventDefault();
+            const form = document.forms["staffForm"];
+            const id = form.elements["staffId"].value;
+            const fio = form.elements["fio"].value;
+            const age = form.elements["age"].value;
+            const workExp = form.elements["workExp"].value;
+            const postId = form.elements["postId"].value;
+            const trainId = form.elements["trainId"].value;
+            if (id == 0)
+                CreateStaff(fio, age, workExp, postId, trainId);
+            else
+                EditStaff(id, fio, age, workExp, postId, trainId);
+        });
+
+        GetStaffs();
+        GetPosts();
+    </script>
+</body>
+</html>
