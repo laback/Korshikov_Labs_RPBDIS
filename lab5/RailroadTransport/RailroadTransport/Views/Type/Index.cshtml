@@ -1,0 +1,31 @@
+﻿@model IEnumerable<RailroadTransport.Models.Type>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Типы поездов</h2>
+
+<p><a class="btn btn-outline-dark" asp-action="Create">Добавить</a></p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.TypeId)</th>
+            <th>@Html.DisplayNameFor(model => model.NameOfType)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.TypeId)</td>
+                <td>@Html.DisplayFor(modelItem => item.NameOfType)</td>
+                <td>
+                    <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.TypeId">Редактировать</a> |
+                    <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.TypeId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

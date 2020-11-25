@@ -1,0 +1,90 @@
+﻿@model RailroadTransport.ViewModels.StaffViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string FIO = Model.FIO;
+    string NameOfPost = Model.NameOfPost;
+    int Age = Model.Age;
+    int WorkExp = Model.WorkExp;
+}
+
+<h2>Сотрудники</h2>
+
+<p><a class="btn btn-outline-dark" asp-action="Create">Добавить</a></p>
+<p><a class="btn btn-outline-dark" asp-action="ClearCache">Очистить фильтр</a></p>
+<p><a class="btn btn-outline-dark" asp-action="Index" asp-route-IsMachinist="true">Сотрудники машинисты</a></p>
+@using (Html.BeginForm("Index", "Staff", FormMethod.Get))
+{
+    <fieldset>
+        ФИО сотрудника: @Html.TextBox("FIO", @FIO)
+        Наименование должности: @Html.TextBox("NameOfPost", @NameOfPost)
+        Возраст сотрудника: @Html.TextBox("Age", @Age)
+        <br><br>Стаж работы сотрудника: @Html.TextBox("WorkExp", @WorkExp)
+        <input class="btn btn-outline-dark" type="submit" value="Найти" />
+    </fieldset>
+}
+<br><br>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Staffs.FirstOrDefault().StaffId)</th>
+            <th>
+                <a asp-action="Index" asp-route-sortState=@Model.SortViewModel.FIOSort asp-route-FIO="@FIO">
+                    @Html.DisplayNameFor(model => model.Staffs.FirstOrDefault().FIO)
+                </a>
+            </th>
+            <th>@Html.DisplayNameFor(model => model.Staffs.FirstOrDefault().TrainId)</th>
+            <th>
+                <a asp-action="Index" asp-route-sortState=@Model.SortViewModel.NameOfPostSort asp-route-NameOfPost="@NameOfPost">
+                    @Html.DisplayNameFor(model => model.Staffs.FirstOrDefault().Post.NameOfPost)
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortState=@Model.SortViewModel.AgeSort asp-route-Age="@Age">
+                    @Html.DisplayNameFor(model => model.Staffs.FirstOrDefault().Age)
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortState=@Model.SortViewModel.WorkExpSort asp-route-WorkExp="@WorkExp">
+                    @Html.DisplayNameFor(model => model.Staffs.FirstOrDefault().WorkExp)
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Staffs)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.StaffId)</td>
+                <td>@Html.DisplayFor(modelItem => item.FIO)</td>
+                <td>@Html.DisplayFor(modelItem => item.TrainId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Post.NameOfPost)</td>
+                <td>@Html.DisplayFor(modelItem => item.Age)</td>
+                <td>@Html.DisplayFor(modelItem => item.WorkExp)</td>
+                <td>
+                    <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.StaffId">Редактировать</a> |
+                    <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.StaffId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

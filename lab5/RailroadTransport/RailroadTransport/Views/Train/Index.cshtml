@@ -1,0 +1,54 @@
+﻿@model RailroadTransport.ViewModels.TrainViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string nameOfType = Model.NameOfType;
+}
+
+<h2>Поезда</h2>
+
+<p><a class="btn btn-outline-dark" asp-action="Create">Добавить</a></p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Trains.FirstOrDefault().TrainId)</th>
+            <th><a asp-action="Index" asp-route-sortState=@Model.SortViewModel.NameOfTypeSort asp-route-NameOfType="@nameOfType">
+                @Html.DisplayNameFor(model => model.Trains.FirstOrDefault().Type.NameOfType)</a>
+            </th>
+            <th>@Html.DisplayNameFor(model => model.Trains.FirstOrDefault().IsFirm)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Trains)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.TrainId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Type.NameOfType)</td>
+                <td>@Html.DisplayFor(modelItem => item.IsFirm)</td>
+                <td>
+                    <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.TrainId">Редактировать</a> |
+                    <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.TrainId">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

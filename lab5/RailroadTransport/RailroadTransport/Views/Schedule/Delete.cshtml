@@ -1,0 +1,27 @@
+﻿@model RailroadTransport.Models.Schedule
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Удаление</h2>
+
+<dl>
+    <dt>@Html.DisplayNameFor(model => model.ScheduleId)</dt>
+    <dd>@Html.DisplayFor(model => model.ScheduleId)</dd>
+    <dt>@Html.DisplayNameFor(model => model.TrainId)</dt>
+    <dd>@Html.DisplayFor(model => model.TrainId)</dd>
+    <dt>@Html.DisplayNameFor(model => model.Stop.NameOfStop)</dt>
+    <dd>@Html.DisplayFor(model => model.Stop.NameOfStop)</dd>
+    <dt>@Html.DisplayNameFor(model => model.Distance)</dt>
+    <dd>@Html.DisplayFor(model => model.Distance)</dd>
+    <dt>@Html.DisplayNameFor(model => model.TimeOfArrive)</dt>
+    <dd>@Html.DisplayFor(model => model.TimeOfArrive)</dd>
+    <dt>@Html.DisplayNameFor(model => model.TimeOfDeparture)</dt>
+    <dd>@Html.DisplayFor(model => model.TimeOfDeparture)</dd>
+</dl>
+<form asp-action="Delete">
+    <input type="hidden" asp-for="ScheduleId" />
+    <input type="submit" value="Удалить" class="btn btn-outline-dark" /> |
+    <a class="btn btn-outline-dark" asp-action="Index">Вернуться к списку</a>
+</form>

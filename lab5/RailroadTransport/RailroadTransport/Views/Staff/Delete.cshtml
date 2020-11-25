@@ -1,0 +1,27 @@
+﻿@model RailroadTransport.Models.Staff
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<h2>Удаление</h2>
+
+<dl>
+    <dt>@Html.DisplayNameFor(model => model.StaffId)</dt>
+    <dd>@Html.DisplayFor(model => model.StaffId)</dd>
+    <dt>@Html.DisplayNameFor(model => model.FIO)</dt>
+    <dd>@Html.DisplayFor(model => model.FIO)</dd>
+    <dt>@Html.DisplayNameFor(model => model.Age)</dt>
+    <dd>@Html.DisplayFor(model => model.Age)</dd>
+    <dt>@Html.DisplayNameFor(model => model.WorkExp)</dt>
+    <dd>@Html.DisplayFor(model => model.WorkExp)</dd>
+    <dt>@Html.DisplayNameFor(model => model.Post.NameOfPost)</dt>
+    <dd>@Html.DisplayFor(model => model.Post.NameOfPost)</dd>
+    <dt>@Html.DisplayNameFor(model => model.TrainId)</dt>
+    <dd>@Html.DisplayFor(model => model.TrainId)</dd>
+</dl>
+<form asp-action="Delete">
+    <input type="hidden" asp-for="StaffId" />
+    <input type="submit" value="Удалить" class="btn btn-outline-dark" /> |
+    <a class="btn btn-outline-dark" asp-action="Index">Вернуться к списку</a>
+</form>

@@ -1,0 +1,81 @@
+﻿@model RailroadTransport.ViewModels.ScheduleViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Расписание</h2>
+@if (User.IsInRole("Admin"))
+{
+    @using (Html.BeginForm("Index", "Schedule", FormMethod.Get))
+    {
+        <fieldset>
+            Наименование остановки: @Html.TextBox("Stop", Model.Stop)
+            Начало интервала времени: @Html.TextBox("StartTime", Model.StartTime)
+            <br />
+            Конец интервала времени: @Html.TextBox("EndTime", Model.EndTime)
+            <input class="btn btn-outline-dark" type="submit" value="Посчитать количество" />
+            Количество поездов: @Html.DisplayFor(model => model.CountOfTrains)
+        </fieldset>
+    }
+    <br />
+    <fieldset>
+        Общее количество остановок: @Html.DisplayFor(model => model.CountOfStops)
+    </fieldset>
+    <br />
+<p><a class="btn btn-outline-dark" asp-action="Create">Добавить</a></p>
+}
+<p><a class="btn btn-outline-dark" asp-action="ClearCache">Очистить фильтр</a></p>
+<p><a class="btn btn-outline-dark" asp-action="Index" asp-route-IsSorted="true">Сортировка</a></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Schedules.FirstOrDefault().ScheduleId)</th>
+            <th>@Html.DisplayNameFor(model => model.Schedules.FirstOrDefault().TrainId)</th>
+            <th>@Html.DisplayNameFor(model => model.Schedules.FirstOrDefault().Day)</th>
+            <th>@Html.DisplayNameFor(model => model.Schedules.FirstOrDefault().Stop.NameOfStop)</th>
+            <th>@Html.DisplayNameFor(model => model.Schedules.FirstOrDefault().Distance)</th>
+            <th>@Html.DisplayNameFor(model => model.Schedules.FirstOrDefault().TimeOfArrive)</th>
+            <th>@Html.DisplayNameFor(model => model.Schedules.FirstOrDefault().TimeOfDeparture)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Schedules)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ScheduleId)</td>
+                <td>@Html.DisplayFor(modelItem => item.TrainId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Day)</td>
+                <td>@Html.DisplayFor(modelItem => item.Stop.NameOfStop)</td>
+                <td>@Html.DisplayFor(modelItem => item.Distance)</td>
+                <td>@Html.DisplayFor(modelItem => item.TimeOfArrive)</td>
+                <td>@Html.DisplayFor(modelItem => item.TimeOfDeparture)</td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a class="btn btn-outline-dark" asp-action="Edit" asp-route-id="@item.ScheduleId">Редактировать</a> |
+                        <a class="btn btn-outline-dark" asp-action="Delete" asp-route-id="@item.ScheduleId">Удалить</a>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

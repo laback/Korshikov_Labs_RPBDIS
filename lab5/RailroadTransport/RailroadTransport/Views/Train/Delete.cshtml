@@ -1,0 +1,19 @@
+﻿@model RailroadTransport.Models.Train
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Удаление</h2>
+
+<dl>
+    <dt>@Html.DisplayNameFor(model => model.Type.NameOfType)</dt>
+    <dd>@Html.DisplayFor(model => model.Type.NameOfType)</dd>
+    <dt>@Html.DisplayNameFor(model => model.IsFirm)</dt>
+    <dd>@Html.DisplayFor(model => model.IsFirm)</dd>
+</dl>
+<form asp-action="Delete">
+    <input type="hidden" asp-for="TypeId" />
+    <input type="submit" value="Удалить" class="btn btn-outline-dark" /> |
+    <a class="btn btn-outline-dark" asp-action="Index">Вернуться к списку</a>
+</form>

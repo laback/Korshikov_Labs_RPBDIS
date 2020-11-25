@@ -1,0 +1,37 @@
+﻿@model RailroadTransport.Models.Staff
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Добавление</h2>
+
+<form asp-action="Create">
+    <input type="hidden" asp-for="StaffId" />
+    <div class="form-group">
+        <div class="form-group">
+            <label asp-for="FIO" class="control-label"></label>
+            <input asp-for="FIO" class="form-control" />
+            <span asp-validation-for="FIO" class="text-danger"></span>
+        </div>
+        <label asp-for="TrainId" class="control-label"></label>
+        <select asp-for="TrainId" class="form-control" asp-items="ViewBag.TrainId"></select>
+        <div class="form-group">
+            <label asp-for="PostId" class="control-label"></label>
+            <select asp-for="PostId" class="form-control" asp-items="ViewBag.PostId"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Age" class="control-label"></label>
+            <input asp-for="Age" class="form-control" />
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="WorkExp" class="control-label"></label>
+            <input asp-for="WorkExp" class="form-control" />
+            <span asp-validation-for="WorkExp" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Добавить" class="btn btn-outline-dark" />
+        </div>
+    </div>
+</form>
