@@ -1,0 +1,3 @@
+DESKTOP-OI4GN8K\SQLEXPRESS
+Scaffold-DbContext "Server=DESKTOP-OI4GN8K\SQLEXPRESS;Database=Course;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer
+
