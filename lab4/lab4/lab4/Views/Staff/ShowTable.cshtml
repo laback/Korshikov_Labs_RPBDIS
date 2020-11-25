@@ -1,0 +1,23 @@
+﻿@model IEnumerable<lab2.Staff>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h3>Сотрудники</h3>
+    <table>
+        <tr class="header">
+            <td><p>Название должности</p></td>
+            <td><p>Номер должности</p></td>
+            <td><p>Номер поезда</p></td>
+        </tr>
+   @foreach (var item in Model)
+    {
+        <tr>
+            <td><p>@Html.DisplayFor(modelItem => item.staffId)</p></td>
+            <td><p>@Html.DisplayFor(modelItem => item.Post.nameOfPost)</p></td>
+            <td><p>@Html.DisplayFor(modelItem => item.trainId)</p></td>
+        </tr>
+    }
+    </table>a
+</div>

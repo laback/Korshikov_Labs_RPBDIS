@@ -1,0 +1,22 @@
+﻿@model IEnumerable<lab2.Post>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h3>ЖД транспорт</h3>
+    <table>
+        <tr class="header">
+            <td><p>Название должности</p></td>
+            <td><p>Номер должности</p></td>
+            <td></td>
+        </tr>
+        @foreach (lab2.Post p in Model)
+        {
+            <tr>
+                <td><p>@p.nameOfPost</p></td>
+                <td><p>@p.postId</p></td>
+            </tr>
+        }
+    </table>
+</div>

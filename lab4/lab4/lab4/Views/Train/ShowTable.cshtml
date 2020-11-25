@@ -1,0 +1,24 @@
+﻿@model IEnumerable<lab2.Train>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h3>ЖД транспорт</h3>
+    <table>
+        <tr class="header">
+            <td><p>Номер поезда</p></td>
+            <td><p>Номер типа поезда</p></td>
+            <td><p>Фирменный ли</p></td>
+            <td></td>
+        </tr>
+        @foreach (lab2.Train t in Model)
+        {
+            <tr>
+                <td><p>@t.trainId</p></td>
+                <td><p>@t.typeId</p></td>
+                <td><p>@t.isFirm</p></td>
+            </tr>
+        }
+    </table>
+</div>
